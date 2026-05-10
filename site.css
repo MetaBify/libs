@@ -118,11 +118,79 @@ button {
   font: inherit;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+code,
+small {
+  display: block;
+  color: #d7bea0;
+  overflow-wrap: anywhere;
+}
+
+.admin-shell {
+  align-items: start;
+}
+
+.admin-panel {
+  width: min(1120px, 100%);
+  min-height: auto;
+  aspect-ratio: auto;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.list {
+  display: grid;
+  gap: 8px;
+  max-height: 320px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.list-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 10px;
+  border: 1px solid rgba(255, 184, 82, 0.28);
+  border-radius: 10px;
+  background: rgba(19, 13, 9, 0.72);
+}
+
+textarea {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  padding: 12px;
+  border: 1px solid rgba(255, 184, 82, 0.44);
+  border-radius: 10px;
+  color: #f4e8d6;
+  background: rgba(19, 13, 9, 0.72);
+  font: 13px/1.45 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+}
+
 @media (max-width: 620px) {
   .panel {
     aspect-ratio: auto;
   }
 
+  .admin-grid,
   .links,
   .copy-row {
     grid-template-columns: 1fr;

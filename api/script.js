@@ -1,32 +1,56 @@
-module.exports = function handler(req, res) {
-  const expectedKey = process.env.SCRIPT_KEY;
+const {
+  fakeLua,
+  getClientIp,
+  logAttempt,
+  readScriptBody,
+  readState,
+  writeState
+} = require("./_shared");
+
+module.exports = async function handler(req, res) {
   const providedKey = req.query.key || req.headers["x-script-key"];
+  const clientIp = getClientIp(req);
 
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("Content-Type", "text/plain; charset=utf-8");
 
-  if (!expectedKey) {
-    res.status(500).send("-- SCRIPT_KEY is not configured on the server");
+  if (!providedKey) {
+    await logAttempt(req, "pending");
+    res.status(200).send(fakeLua(clientIp));
     return;
   }
 
-  if (!providedKey || providedKey !== expectedKey) {
-    res.status(403).send("-- invalid or missing key");
+  const state = await readState();
+  const record = state.keys.find((item) => item.key === providedKey);
+
+  if (!record) {
+    await logAttempt(req, "invalid-key", providedKey);
+    res.status(403).send("-- invalid key");
     return;
   }
 
-  const encodedBody = process.env.SCRIPT_BODY_BASE64;
-  const plainBody = process.env.SCRIPT_BODY;
-
-  if (encodedBody) {
-    res.status(200).send(Buffer.from(encodedBody, "base64").toString("utf8"));
+  if (!record.active) {
+    await logAttempt(req, "revoked-key", providedKey);
+    res.status(403).send("-- key revoked");
     return;
   }
 
-  if (plainBody) {
-    res.status(200).send(plainBody);
+  if (record.ip !== clientIp) {
+    await logAttempt(req, "wrong-ip", providedKey);
+    res.status(403).send("-- key is not valid for this IP");
     return;
   }
 
-  res.status(500).send("-- SCRIPT_BODY or SCRIPT_BODY_BASE64 is not configured on the server");
+  const body = await readScriptBody();
+
+  if (!body) {
+    res.status(500).send("-- script body is not configured");
+    return;
+  }
+
+  record.lastUsedAt = new Date().toISOString();
+  record.uses = (record.uses || 0) + 1;
+  await writeState(state);
+
+  res.status(200).send(body);
 };
