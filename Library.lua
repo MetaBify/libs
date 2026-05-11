@@ -40,7 +40,7 @@ local Library = {
 
     Black = Color3.fromRGB(7, 5, 4);
     Font = Enum.Font.Gotham,
-    CornerRadius = UDim.new(0, 15),
+    CornerRadius = UDim.new(0, 10),
     WindowCornerRadius = UDim.new(0, 15),
     PanelTransparency = 0.18,
     WindowTransparency = 0.12,
@@ -162,7 +162,13 @@ function Library:ApplyCorner(Inst)
     Corner.CornerRadius = Radius;
     Corner.Parent = Inst;
 
-    if Inst.BorderSizePixel > 0 and not Inst:FindFirstChild('LinoriaBorderStroke') then
+    local StrokeHeight = Inst.Size.Y.Offset;
+    local StrokeWidth = Inst.Size.X.Offset;
+
+    if Inst.BorderSizePixel > 0
+        and StrokeHeight > 16
+        and StrokeWidth > 16
+        and not Inst:FindFirstChild('LinoriaBorderStroke') then
         local Stroke = Instance.new('UIStroke');
         Stroke.Name = 'LinoriaBorderStroke';
         Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
@@ -2114,6 +2120,7 @@ do
         local SliderOuter = Library:Create('Frame', {
             BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
+            BorderSizePixel = 0;
             Size = UDim2.new(1, -4, 0, 13);
             ZIndex = 5;
             Parent = Container;
@@ -2127,6 +2134,7 @@ do
             BackgroundColor3 = Library.MainColor;
             BorderColor3 = Library.OutlineColor;
             BorderMode = Enum.BorderMode.Inset;
+            BorderSizePixel = 0;
             Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 6;
             Parent = SliderOuter;
@@ -2137,9 +2145,22 @@ do
             BorderColor3 = 'OutlineColor';
         });
 
+        local SliderStroke = Library:Create('UIStroke', {
+            ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
+            Color = Library.OutlineColor;
+            LineJoinMode = Enum.LineJoinMode.Round;
+            Thickness = 1;
+            Parent = SliderInner;
+        });
+
+        Library:AddToRegistry(SliderStroke, {
+            Color = 'OutlineColor';
+        });
+
         local Fill = Library:Create('Frame', {
             BackgroundColor3 = Library.AccentColor;
             BorderColor3 = Library.AccentColorDark;
+            BorderSizePixel = 0;
             Size = UDim2.new(0, 0, 1, 0);
             ZIndex = 7;
             Parent = SliderInner;
@@ -2152,6 +2173,7 @@ do
 
         local HideBorderRight = Library:Create('Frame', {
             BackgroundColor3 = Library.AccentColor;
+            BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(1, 0, 0, 0);
             Size = UDim2.new(0, 1, 1, 0);
@@ -2200,7 +2222,7 @@ do
             local X = math.ceil(Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, Slider.MaxSize));
             Fill.Size = UDim2.new(0, X, 1, 0);
 
-            HideBorderRight.Visible = not (X == Slider.MaxSize or X == 0);
+            HideBorderRight.Visible = false;
         end;
 
         SliderInner:GetPropertyChangedSignal('AbsoluteSize'):Connect(function()
