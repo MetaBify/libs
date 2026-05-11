@@ -36,7 +36,7 @@ local Library = {
     OutlineColor = Color3.fromRGB(110, 75, 45);
     RiskColor = Color3.fromRGB(255, 92, 84),
     LedColor = Color3.fromRGB(255, 184, 82);
-    DefaultIcon = 'rbxassetid://76177725462537';
+    DefaultIcon = 'rbxthumb://type=Asset&id=76177725462537&w=150&h=150';
 
     Black = Color3.fromRGB(7, 5, 4);
     Font = Enum.Font.Gotham,
@@ -3241,9 +3241,9 @@ function Library:CreateWindow(...)
 
     local TabArea = Library:Create('Frame', {
         BackgroundTransparency = 1;
-        ClipsDescendants = true;
+        ClipsDescendants = false;
         Position = UDim2.new(0, 9, 0, 8);
-        Size = UDim2.new(1, -18, 0, 28);
+        Size = UDim2.new(1, -18, 0, 34);
         ZIndex = 1;
         Parent = MainSectionInner;
     });
@@ -3259,8 +3259,8 @@ function Library:CreateWindow(...)
         BackgroundColor3 = Library.MainColor;
         BackgroundTransparency = 0.18;
         BorderColor3 = Library.OutlineColor;
-        Position = UDim2.new(0, 8, 0, 42);
-        Size = UDim2.new(1, -16, 1, -50);
+        Position = UDim2.new(0, 8, 0, 48);
+        Size = UDim2.new(1, -16, 1, -56);
         ZIndex = 2;
         Parent = MainSectionInner;
     });
@@ -3306,8 +3306,22 @@ function Library:CreateWindow(...)
             Size = UDim2.new(1, 0, 1, 0);
             Text = Name;
             TextSize = 14;
-            ZIndex = 1;
+            ZIndex = 3;
             Parent = TabButton;
+        });
+
+        local ActiveIndicator = Library:Create('Frame', {
+            BackgroundColor3 = Library.AccentColor;
+            BackgroundTransparency = 1;
+            BorderSizePixel = 0;
+            Position = UDim2.new(0, 10, 1, -3);
+            Size = UDim2.new(1, -20, 0, 2);
+            ZIndex = 4;
+            Parent = TabButton;
+        });
+
+        Library:AddToRegistry(ActiveIndicator, {
+            BackgroundColor3 = 'AccentColor';
         });
 
         local Blocker = Library:Create('Frame', {
@@ -3399,7 +3413,12 @@ function Library:CreateWindow(...)
             Blocker.BackgroundTransparency = 0;
             TabButton.BackgroundColor3 = Library.MainColor;
             TabButton.BackgroundTransparency = 0.05;
+            TabButton.BorderColor3 = Library.LedColor;
+            TabButtonLabel.TextColor3 = Library.AccentColor;
+            ActiveIndicator.BackgroundTransparency = 0;
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = 'MainColor';
+            Library.RegistryMap[TabButton].Properties.BorderColor3 = 'LedColor';
+            Library.RegistryMap[TabButtonLabel].Properties.TextColor3 = 'AccentColor';
             TabFrame.Visible = true;
             TabFrame.Position = UDim2.new(0, 0, 0, 8);
             TweenService:Create(TabFrame, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
@@ -3425,7 +3444,12 @@ function Library:CreateWindow(...)
             Blocker.BackgroundTransparency = 1;
             TabButton.BackgroundColor3 = Library.BackgroundColor;
             TabButton.BackgroundTransparency = 0.2;
+            TabButton.BorderColor3 = Library.AccentColor;
+            TabButtonLabel.TextColor3 = Library.FontColor;
+            ActiveIndicator.BackgroundTransparency = 1;
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = 'BackgroundColor';
+            Library.RegistryMap[TabButton].Properties.BorderColor3 = 'AccentColor';
+            Library.RegistryMap[TabButtonLabel].Properties.TextColor3 = 'FontColor';
             TweenService:Create(TabFrame, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
                 Position = UDim2.new(0, 0, 0, -6);
             }):Play();

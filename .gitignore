@@ -3,3 +3,18 @@ updatenewui.lua
 updatenwui.lua
 newupdate.lua
 newupdatenewui.lua
+updatenew.lua
+backup.lua
+*.private.lua
+*.local.lua
+
+# Obfuscator/private build output
+obfuscator/
+*.obfuscated.lua
+obfuscated*.lua
+
+# Local hosting/state/secrets
+.env
+.env.*
+venom-host/script.lua
+venom-host/*.local.json
