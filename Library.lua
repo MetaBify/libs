@@ -40,8 +40,8 @@ local Library = {
 
     Black = Color3.fromRGB(7, 5, 4);
     Font = Enum.Font.Gotham,
-    CornerRadius = UDim.new(0, 30),
-    WindowCornerRadius = UDim.new(0, 30),
+    CornerRadius = UDim.new(0, 15),
+    WindowCornerRadius = UDim.new(0, 15),
     PanelTransparency = 0.18,
     WindowTransparency = 0.12,
     GlowTransparency = 0.28,
@@ -152,7 +152,14 @@ function Library:ApplyCorner(Inst)
 
     local Corner = Instance.new('UICorner');
     Corner.Name = 'LinoriaCorner';
-    Corner.CornerRadius = Library.CornerRadius;
+    local Radius = Library.CornerRadius;
+    local Height = Inst.Size.Y.Offset;
+
+    if Radius.Scale == 0 and Height > 0 and Height < (Radius.Offset * 2) then
+        Radius = UDim.new(0, math.max(2, math.min(Radius.Offset, math.floor(Height / 2) - 1)));
+    end;
+
+    Corner.CornerRadius = Radius;
     Corner.Parent = Inst;
 
     if Inst.BorderSizePixel > 0 and not Inst:FindFirstChild('LinoriaBorderStroke') then
