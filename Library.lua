@@ -40,8 +40,8 @@ local Library = {
 
     Black = Color3.fromRGB(7, 5, 4);
     Font = Enum.Font.Gotham,
-    CornerRadius = UDim.new(0, 10),
-    WindowCornerRadius = UDim.new(0, 14),
+    CornerRadius = UDim.new(0, 30),
+    WindowCornerRadius = UDim.new(0, 30),
     PanelTransparency = 0.18,
     WindowTransparency = 0.12,
     GlowTransparency = 0.28,
@@ -154,6 +154,29 @@ function Library:ApplyCorner(Inst)
     Corner.Name = 'LinoriaCorner';
     Corner.CornerRadius = Library.CornerRadius;
     Corner.Parent = Inst;
+
+    if Inst.BorderSizePixel > 0 and not Inst:FindFirstChild('LinoriaBorderStroke') then
+        local Stroke = Instance.new('UIStroke');
+        Stroke.Name = 'LinoriaBorderStroke';
+        Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
+        Stroke.Color = Inst.BorderColor3;
+        Stroke.LineJoinMode = Enum.LineJoinMode.Round;
+        Stroke.Thickness = Inst.BorderSizePixel;
+        Stroke.Parent = Inst;
+
+        Inst.BorderSizePixel = 0;
+
+        Inst:GetPropertyChangedSignal('BorderColor3'):Connect(function()
+            Stroke.Color = Inst.BorderColor3;
+        end);
+
+        Inst:GetPropertyChangedSignal('BorderSizePixel'):Connect(function()
+            if Inst.BorderSizePixel > 0 then
+                Stroke.Thickness = Inst.BorderSizePixel;
+                Inst.BorderSizePixel = 0;
+            end;
+        end);
+    end;
 end;
 
 function Library:Create(Class, Properties)
